@@ -33,6 +33,8 @@ Direct user input access, eg. overriding the default modal input, is possible.
 Just provide a callback that accepts events. Widget input may also be 
 overriden similarly.
 
+It **DOES NOT** handle unicode, only Ascii ish.
+
 ## Dependencies
 Obviously, this library requires ncurses. Not using windows are you... dork?
 `sudo apt install libncurses-dev`
@@ -46,7 +48,7 @@ Also, the Lost Boys OST.
 ```cpp
 
 #include <ncurses.h>
-#include <gridfriend.h>
+#include <gf.h>
 
 int main()
 {

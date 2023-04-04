@@ -1,4 +1,5 @@
 set(CURSES_NEED_NCURSES TRUE)
+set(CURSES_NEED_WIDE TRUE) # wide character unicode
 find_package(Curses REQUIRED)
 
 # if we haven't already, add imported target library
