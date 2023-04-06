@@ -3,7 +3,10 @@
 #include <ncurses.h>
 
 #include <functional>
+#include <map>
+#include <set>
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace gf
@@ -26,44 +29,61 @@ namespace gf
 
 using UserInputEvent = int;
 using Cell = char;
+using Screen = std::vector<std::vector<Cell>>; // row by col
 
-// forward declare Screen
-struct Screen;
-// Zone on a grid
+// A widget is a user interface element. It knows:
+// - how to update its state from user input events
+// - how to print itself onto a Screen
+struct Widget
+{
+    // update state given user input event
+    void update(UserInputEvent e);
+    // print view onto screen
+    void print(
+            Screen& screen,
+            int top_row,
+            int right_col,
+            int bot_row,
+            int left_col);
+};
+
+namespace Grid
+{
+
 struct Zone
 {
-    // this tells us how many cells there are
-    // and where to render
-    Screen* screen;
-
-    // this tells us the dimensions of our zone
-    // its grid position
-    int grid_row_index;
-    int grid_column_index;
-    // how far it spans
-    int grid_row_span;
-    int grid_column_span;
-
-    // this tells us how to render the zone
-    // after responding to user input
-    std::function<void(UserInputEvent)> render;
+    int row;
+    int col;
+    int row_span;
+    int col_span;
 };
 
-// A screen is a bunch of cells with a grid overlay
-struct Screen
+struct Layout
 {
-    Screen(
-            int grid_rows,
-            int grid_columns,
-            int cell_rows,
-            int cell_columns);
-    std::vector<std::vector<Cell>> cells;
-    std::vector<Zone> zones; // one zone takes focus at a time, holds widget
+    Layout(int rows, int cols, Screen& screen) :
+        rows{rows},
+        cols{cols},
+        screen{screen}
+    {}
+
+    int rows;
+    int cols;
+    Screen& screen;
+    std::map<Zone, Widget> widgets;
 };
+
+}
 
 struct App
 {
+    // RAII around ncurses
+    App();
+    ~App();
     void listen();
+    void focus_layout(Grid::Layout& layout);
+
+    Screen screen;
+    std::set<Grid::Layout> layouts;
 };
 
 }

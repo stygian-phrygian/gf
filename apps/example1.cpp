@@ -1,4 +1,6 @@
 #include <gf.h>
+#include <ncursesw/ncurses.h>
+#include <locale.h>
 
 int main()
 {
@@ -11,12 +13,13 @@ int main()
 
     // begin app listening
 
+    setlocale(LC_ALL, "");
     initscr();
     raw();
     keypad(stdscr, true);
     noecho();
 
-    printw("type any character to see it in bold: \n");
+    printw("type any character 👉 to see it in bold: \n");
     refresh();
 
     int ch = getch();
