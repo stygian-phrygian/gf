@@ -4,6 +4,7 @@
 
 #include <functional>
 #include <map>
+#include <optional>
 #include <set>
 #include <string>
 #include <utility>
@@ -14,6 +15,7 @@ namespace gf
 
 using UserInputEvent = int;
 
+// TODO make this a concept
 // A widget is a user interface element. It knows:
 // - how to update its state from user input events
 // - how to print itself onto an ncurses WINDOW
@@ -26,10 +28,11 @@ struct Widget
             // the stdscr window
             WINDOW* window,
             // absolute position of our view's top left corner on stdscr
-            std::pair<int, int> top_left_corner /*rows cols*/,
-            // our view's dimensions
+            int top_left_row,
+            int top_left_col,
+            // our widget's absolute dimensions
             int height,
-            int width);
+            int width) const;
 };
 
 namespace Grid
@@ -56,13 +59,17 @@ struct Layout
 
 }
 
+using Listener = std::function<void(UserInputEvent)>;
 struct App
 {
     // RAII around ncurses
     App();
     ~App();
-    void listen();
+    // TODO default arguments?
+    void listen(std::optional<Listener> listener);
     std::vector<Grid::Layout> layouts;
+private:
+    void default_listener();
 };
 
 }

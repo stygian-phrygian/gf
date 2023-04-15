@@ -1,43 +1,29 @@
 #include <gf.h>
-#include <ncursesw/ncurses.h>
-#include <locale.h>
+
+using namespace gf;
 
 int main()
 {
-    // create app with certain grid size
+    // create app with grid layout
+    App app{};
+    int rows = 3;
+    int cols = 4;
+    app.layouts.emplace_back(Grid::Layout{rows, cols});
+    auto& widgets = app.layouts.front().widgets;
 
-    // populate app with widgets
+    // populate grid layout with widgets
+    for (int r = 0; r < rows; ++r)
+    {
+        for (int c = 0; c < cols; ++c)
+        {
+            widgets.insert({/* TODO */});
+        }
+    }
 
-    // set-up callback to switch on input
+    // TODO set-up callback to switch on input
     // potentially updating widget's state
 
     // begin app listening
-
-    setlocale(LC_ALL, "");
-    initscr();
-    raw();
-    keypad(stdscr, true);
-    noecho();
-
-    printw("type any character 👉 to see it in bold: \n");
-    refresh();
-
-    int ch = getch();
-    if (ch == KEY_F(1))
-    {
-        printw("F1 pressed!\n");
-    }
-    else
-    {
-        printw("The pressed key is: ");
-        attron(A_BOLD);
-        printw("%c", ch);
-        attroff(A_BOLD);
-    }
-    getch();
-
-    echo();
-    noraw();
-    endwin();
+    app.listen();
 }
 
